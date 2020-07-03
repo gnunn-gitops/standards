@@ -68,6 +68,8 @@
         <td align="right" valign="top">3</td>
         <td valign="top">├──────overlays</td>
         <td valign="top">
+          <ul>
+          <li>In general overlays in manifests should be the exception not the norm. Variants of deployments are acceptable as overlays but more often then not overlays should be confined to environments.</li>
         </td>
     </tr>
     <tr>
@@ -83,10 +85,51 @@
         </td>
     </tr>
     <tr>
-        <td align="right" valign="top">3</td>
-        <td valign="top">├──────overlays</td>
+        <td align="right" valign="top">1</td>
+        <td valign="top">├──tekton</td>
         <td valign="top">
         </td>
     </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────pipelines</td>
+        <td valign="top">
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────{pipeline1}/base</td>
+        <td valign="top">
+            <ul>
+                <li>Includes pipeline plus all artifacts needed for pipeline not called out in separate folders. Things like PVCs for workspaces, buildconfigs used by the pipeline, etc go here</li>
+                <li>Pipelines may but do not need to map 1:1 to apps</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────{pipeline2}/base</td>
+        <td valign="top">
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────pipelineruns</td>
+        <td valign="top">
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────{pipelinerun1}/base</td>
+        <td valign="top">
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────{pipelinerun2}/base</td>
+        <td valign="top">
+        </td>
+    </tr>
+
 
 </table>
