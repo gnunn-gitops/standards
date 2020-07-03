@@ -130,6 +130,154 @@
         <td valign="top">
         </td>
     </tr>
-
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────tasks</td>
+        <td valign="top">
+            <ul>
+                <li>All custom tasks go here, no distinction between shared tasks and pipeline specific tasks. Today’s pipeline specific task is tomorrow’s shared task</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────base</td>
+        <td valign="top">
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────jenkins</td>
+        <td valign="top">
+            <ul>
+                <li>If you use Jenkins, I haven't spent much time on Jenkins layout since I'm mostly using tekton these days</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────pipelines</td>
+        <td valign="top">
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────tools</td>
+        <td valign="top">
+            <ul>
+                <li>Define gitops artifacts here (i.e. ArgoCD projects and applications, ACM subscriptions, channels, etc)</li>
+                <li>Having separate named folders for tools is optional, if your org is committed to one tool feel free to drop yaml directly into tools</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────argocd/base</td>
+        <td valign="top">
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────acm/base</td>
+        <td valign="top">
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">0</td>
+        <td valign="top">├environments</td>
+        <td valign="top">
+            <ul>
+                <li><b>Must</b> Inherit from <i>manifests</i> only, absolutely not permitted to inherit from <i>clusters</i></li>
+                <li>Provides environment specific kustomization that is separate and distinct from cluster configuration</li>
+                <li>Can aggregate multiple bases from <i>manifests</i> to create complete application. For example, aggregate several microservices or an application and it's database.</li>
+                <li>Namespaces should be created here</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">1</td>
+        <td valign="top">├──overlays</td>
+        <td valign="top">
+            <ul>
+                <li>Note that names of overlays are arbritrary, use what works for you.</li>
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────dev</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────test</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────prod</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────cicd</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────tools</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">0</td>
+        <td valign="top">├clusters</td>
+        <td valign="top">
+            <ul>
+                <li>Cluster specific overlays go here</li>
+                <li>Clusters can inherit from <i>environments</i> and <i>manifests</i></li>
+                <li>No namespace creation or specification goes here</li>
+                <li>Cluster specific rolebindings go here, since we do not allow namespace specification in kustomize here this avoids the whole issue with kustomize replacing namespaces in roles issue</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">1</td>
+        <td valign="top">├──overlays</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────{cluster1}</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────dev</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────test</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────cicd</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────tools</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────{cluster2}</td>
+        <td valign="top"></td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">3</td>
+        <td valign="top">├──────prod</td>
+        <td valign="top"></td>
+    </tr>
 
 </table>
