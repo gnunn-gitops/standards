@@ -27,13 +27,21 @@
     </tr>
     <tr>
         <td align="right" valign="top">0</td>
-        <td valign="top">manifests</td>
+        <td valign="top">├ manifests</td>
         <td valign="top">
-            <ul valign="top">
+            <ul>
                 <li>Provides base yaml for all required apps, pipelines, and gitops tools.</li>
                 <li>Only overlays that are needed to support environment independent variants are permitted. For example kustomizing an HA deployment versus single</li>
                 <li><em>Generally</em> no buildconfigs (i.e. for s2i) in app folders, those should be in tekton or jenkins pipelines folder</li>
                 <li>Controversial Any values that must be configured downstream (i.e. namespace references) should use kustomize features to avoid explicitly specifying them. In cases where it is not possible capitalized values should be used to prevent them slipping through accidentally</li>
+            </ul>
+        </td>
+        <td align="right" valign="top">1</td>
+        <td valign="top">├── apps</td>
+        <td valign="top">
+            <ul>
+                <li>No distinction between apps (i.e. code we write) versus services (databases, messaging systems, etc). It’s an artificial distinction IMHO</li>
+                <li>Having said that, if your organization feels strongly about services, have peer folder to apps called services</li>
             </ul>
         </td>
 </table>
