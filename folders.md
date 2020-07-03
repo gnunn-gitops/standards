@@ -20,6 +20,11 @@
 ## Folder Layout
 
 <table>
+    <colgroup>
+        <col />
+        <col nowrap />
+        <col />
+    </colgroup>
     <tr>
         <th></th>
         <th>Folder</th>
@@ -27,7 +32,7 @@
     </tr>
     <tr>
         <td align="right" valign="top">0</td>
-        <td valign="top">├ manifests</td>
+        <td valign="top">├manifests</td>
         <td valign="top">
             <ul>
                 <li>Provides base yaml for all required apps, pipelines, and gitops tools.</li>
@@ -39,7 +44,7 @@
     </tr>
     <tr>
         <td align="right" valign="top">1</td>
-        <td valign="top">├── apps</td>
+        <td valign="top">├──apps</td>
         <td valign="top">
             <ul>
                 <li>No distinction between apps (i.e. code we write) versus services (databases, messaging systems, etc). It’s an artificial distinction IMHO</li>
