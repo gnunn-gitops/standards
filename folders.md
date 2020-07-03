@@ -36,6 +36,8 @@
                 <li>Controversial Any values that must be configured downstream (i.e. namespace references) should use kustomize features to avoid explicitly specifying them. In cases where it is not possible capitalized values should be used to prevent them slipping through accidentally</li>
             </ul>
         </td>
+    </tr>
+    <tr>
         <td align="right" valign="top">1</td>
         <td valign="top">├── apps</td>
         <td valign="top">
@@ -44,4 +46,5 @@
                 <li>Having said that, if your organization feels strongly about services, have peer folder to apps called services</li>
             </ul>
         </td>
+    </tr>
 </table>
