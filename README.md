@@ -1,0 +1,3 @@
+A work in progress on documenting some standards for GitOps and Kubernetes that I am using. This is not meant to be an authoritative document, I firmly believe that different organizations will need to define their own standards based on their organization structure, processes, etc.
+
+Having said that, I did want to put some thoughts down to reference in some of my other repos to help people using them understand the decisions I am making.
