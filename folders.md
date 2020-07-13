@@ -302,9 +302,9 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
 
 A key question in any gitops scenario is how to manage promotion of changes between different environments and clusters. This process is heavily dependent on the structure and processes of the organization, however it is possible to define some basic characteristics that we are looking for as follows:
 
-* Since every overlay depends on the base manifests, every change in the manifests needs to flow through the environments in hierarchical order, i.e. (dev > test > prod)
-* Changes to environments/clusters can flow directly to the target environment. i.e. a direct change to the prod overlay can flow directly to prod without a promotion process. However given the structure of our repo these direct changes should be rare (i.e. prod specific secrets, etc)
+* Since every overlay depends on the base manifests, every change in the manifests needs to flow through the environments in hierarchical order, i.e. (dev > test > prod). We do not want a change to a base flowing to all environments simultaneously.
 * To prevent changes in manifests flowing directly to environments, the state of environments and clusters needs to be pinned in git (i.e. revision or tag).
+* Changes to environments/clusters can flow directly to the target environment. i.e. a direct change to the prod overlay can flow directly to prod without a promotion process. However given the structure of our repo these direct changes should be rare (i.e. prod specific secrets, etc)
 
 As stated above, we need to tie specific environments to specific revisions so that changes in the repo can be promoted in a controlled manner following a proper SDLC process. Both the various GitOps tools (ArgoCD, Flux, ACM, etc) and Kustomize support referencing specific commits in a repo, as a result there are various options we have for managing environment promotions.
 
