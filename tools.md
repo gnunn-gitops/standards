@@ -14,7 +14,7 @@ __Ansible__. Great tool for managing infrastructure as code across a wide variet
 
 While Ansible is great automation tool, I personally prefer to use native *k8s* tools where possible. Also like Helm it relies on templating which means you cannot directly apply yaml in your git repos when doing iterative development.
 
-Finally none of the common GitOps tools support Ansible so it is really only an option if you using Ansible for your kubernetes GitOps which is generally not recommended.\
+Finally none of the common GitOps tools support Ansible so it is really only an option if you using Ansible for your kubernetes GitOps which is generally not recommended.
 
 __OpenShift Templates__. OpenShift templates pre-dates a lot of the tools on this list, it was released in OpenShift 3.0 when very few tools for managing managing manifests existed. OpenShift Templates are very easy to develop and work with, however like other templating solutions it's challenging to use in an iterative development process.
 
