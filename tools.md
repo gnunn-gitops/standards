@@ -14,19 +14,21 @@ __Ansible__. Great tool for managing infrastructure as code across a wide variet
 
 While Ansible is great automation tool, I personally prefer to use native *k8s* tools where possible. Also like Helm it relies on templating which means you cannot directly apply yaml in your git repos when doing iterative development.
 
-Finally none of the common GitOps tools support Ansible so it is really only an option if you using Ansible for your kubernetes GitOps which is generally not recommended.
+Finally none of the common GitOps tools support Ansible so it is really only an option if you using Ansible for your kubernetes GitOps which is generally not recommended. Absolutely use Ansible for infrastructure gitops (i.e. VMs, cluster provisioning, etc) but when dealing with kubernetes manifests there are better options.
 
 __OpenShift Templates__. OpenShift templates pre-dates a lot of the tools on this list, it was released in OpenShift 3.0 when very few tools for managing managing manifests existed. OpenShift Templates are very easy to develop and work with, however like other templating solutions it's challenging to use in an iterative development process.
 
-Similar to Ansible, none of the existing DevOps tools support OpenShift Templates.
+Similar to Ansible, none of the existing DevOps as far as I know support OpenShift Templates making it a non-starter.
 
 __Helm__. Helm is a package manager for Kubernetes and OpenShift 4 now supports it natively. Helm provides charts which can be deployed into OpenShift using the Helm CLI or via the OpenShift web console. These charts contain templates along with values that can be substituted when the chart is deployed to control the yaml that is applied. A neat feature of the charts is that you can have a chart that is uses other charts as dependencies.
 
-Personally I think Helm's sweet spot is as a package manager, i.e. similar to RPMs, and is overkill for most enterprise teams. Additionally charts can quickly become very complex and difficult to maintain for anyone other then the original author. Finally it uses templates which again is challenging for iterative development but easier then other templating solutions with the capabilities that Helm provides.
+Personally I think Helm's sweet spot is as a package manager, i.e. similar to RPMs, and is overkill for most enterprise teams. Additionally charts can quickly become very complex and difficult to maintain for anyone other then the original author. Lastly it uses templates which again is challenging for iterative development but easier then other templating solutions with the capabilities that Helm provides.
+
+Finally from an application/package manager perspective I feel like I'm getting that functionality out of my gitops tool and Helm is providing a lot of value add here.
 
 All GitOps tools support working with Helm charts.
 
-__jsonnet/ksonnet__. No experience with this but I do know some people quite like this approach, I've never seen it used at any of my customers however.
+__jsonnet/ksonnet__. No experience with this but I do know some folks quite like this approach, however personally I've never seen it used at any of my customers.
 
 Most GitOps tools support jsonnet/ksonnet.
 
