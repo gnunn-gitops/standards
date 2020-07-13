@@ -1,4 +1,4 @@
-# Gitops Folder Structure
+# GitOps Folder Structure
 
 ## Introduction
 
@@ -16,6 +16,22 @@
 
 * As per the tools standards, this folder structure is dependent on kustomize. No thought is given to Helm or other alternatives at this time.
 * A lesser used feature of kustomize is its ability to leverage remote repos, i.e. specify a base or overlay from a separate repo. This can be used to isolate environmental configurations in separate repos without duplicating yaml
+* This document is priomarily focused on the Application use case, another use case is using GitOps for cluster configuration. Some of what is described here may be relevant to both however it may be desirable to use an alternative folder structure.
+
+## More On Why Not Environment Branches?
+
+So in gitops you sometimes see organizations using *permanent* branches to represent different environments. In these cases you have a dev branch for the dev environment, a test branch for the test environment, etc.
+
+This often seems like an ideal way to do things, promoting between environments simply comes a matter of merging from lower environment branches to higher environment branches. However in practice it can be quite challenging for the following reasons:
+
+* There are often many files that are environment specific and should either not be merged between environments or need to be named uniquely to avoid collisions
+* Typically the 1:1 branch to environment works best when the manifests are identical across all branches, tools like kustomize do not fit into this pattern
+* In a microservices world, a one branch per environment will quickly lead to an explosion of branches which again becomes difficult and cumbersome to maintain
+* Difficult to have a unified view of cluster state across all environments since the state is stored in separate branches.
+
+So in short I personally much prefer a single branch style with multiple folders to represent environments and clusters as we will see below.
+
+Obviously this does not preclude using branches for updates, PRs, etc but these branches should be short lived, temporary artifacts to support development and not permanent fixtures.
 
 ## Folder Layout
 
@@ -281,3 +297,65 @@
     </tr>
 
 </table>
+
+## Promoting Changes
+
+A key question in any gitops scenario is how to manage promotion of changes between different environments and clusters. This process is heavily dependent on the structure and processes of the organization, however it is possible to define some basic characteristics that we are looking for as follows:
+
+* Since every overlay depends on the base manifests, every change in the manifests needs to flow through the environments in hierarchical order, i.e. (dev > test > prod)
+* Changes to environments/clusters can flow directly to the target environment. i.e. a direct change to the prod overlay can flow directly to prod without a promotion process. However given the structure of our repo these direct changes should be rare (i.e. prod specific secrets, etc)
+* To prevent changes in manifests flowing directly to environments, the state of environments and clusters needs to be pinned in git (i.e. revision or tag).
+
+As stated above, we need to tie specific environments to specific revisions so that changes in the repo can be promoted in a controlled manner following a proper SDLC process. Both the various GitOps tools (ArgoCD, Flux, ACM, etc) and Kustomize support referencing specific commits in a repo, as a result there are various options we have for managing environment promotions.
+
+Note that using branches is implicit in these options but not discussed directly. As per the Why Not Branches section above, the intent is for short-lived branches to be created for revisions and merged back to trunk. So managing revisions is really about tracking the appropriate revision in trunk.
+
+#### Option 1 - Manage revisions in GitOps Tool
+
+In this option we deploy each environment as an independent entity in the GitOps tool and tie each environment to a specific revision. So in ArgoCD, we would tie the application object for the Dev environment to one revision, the Test environment to another revision, etc.
+
+When we are ready to promote a change, we simply update the revision in the GitOps tool to reference the appropriate revision or tag in the repo.
+
+This is simple to do however it does require active management of the GitOps tools entities.
+
+#### Option 2 - Manage revisions in kustomize
+
+In this option each environment we deploy uses kustomize to manage the git revision. By default you tie kustomize to the local directory, i.e:
+
+```
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: product-catalog-dev
+
+bases:
+- ../../../manifests/app/database/base
+- ../../../manifests/app/server/base
+- ../../../manifests/app/client/base
+```
+
+However kustomize supports remote references so you can also reference the bases remotely with specific git revisions:
+
+```
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: product-catalog-dev
+
+bases:
+- https://github.com/gnunn-gitops/product-catalog/manifests/app/database/base?ref=9769ad7
+- https://github.com/gnunn-gitops/product-catalog/manifests/app/server/base?ref=9769ad7
+- https://github.com/gnunn-gitops/product-catalog/manifests/app/client/base?ref=9769ad7
+```
+
+In this way we can promote changes across multiple environments by simply updating the reference accordingly.
+
+This approach provides very explicit control over the bases at the slight cost of having kustomize perform additional clones of the repo.
+
+#### Option 3 - Hybrid (Do Both)
+
+In this option we combine Options #1 and #2 for maximum control.
+
+#### Recommendation
+
+At this point I don't have one as I don't have enough experience yet to determine how I personally want to manage things. Having said that, you absolutely do need to tie your environments to git revisions and not have them follow trunk directly. So pick a style and go with it and see how it works out :)
