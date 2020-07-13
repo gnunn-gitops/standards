@@ -1,4 +1,4 @@
-# GitOps Folder Structure
+# GitOps Tools
 
 ## Introduction
 

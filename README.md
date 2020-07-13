@@ -7,6 +7,6 @@ This document is reflective of my personal preferences and the standards I use i
 
 ## Documents
 
-* [https://github.com/gnunn-gitops/standards/blob/master/tools.md](Tools) - Thoughts on various manifest and gitops tools
+* [Tools](tools.md) - Thoughts on various manifest and gitops tools
 
-* [https://github.com/gnunn-gitops/standards/blob/master/folders.md](Tools) - Folder structure
+* [Folders](folders.md) - Folder structure
