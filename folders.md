@@ -380,4 +380,4 @@ I also highly recommend checking out the [Red Hat Canada GitOps](https://github.
 
 ## Acknowledgements
 
-I'd like to thank Andrew Pitt whose led the way on lot of the GitOps stuff in our group, he built the ArgoCD installation above as well as a substantial portion of the catalog items.
+I'd like to thank Andrew Pitt who has led the way on lot of the GitOps stuff in our group, he built the ArgoCD installation above as well as a substantial portion of the catalog items.
