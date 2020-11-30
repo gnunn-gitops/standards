@@ -2,7 +2,15 @@
 
 ## Introduction
 
+Approximately 8 months ago I began my GitOps journey with kustomize followed shortly thereafter with adding ArgoCD after being introduced to it by my colleague Andrew Pitt. When I started working with kustomize one thing I looked for was a set of standards around practices and folder layout in order to apply some consistency to the work I was doing. Unfortunately I didn't find much beyond overly simplistic suggestions that didn't really work, at least for me, once I scaled them out to more real world situations.
+
+As a result I ended up crafting my own set of standards which I'm still using to this day and I thought I'd share it more broadly. Now I am absolutely not saying this is the end all, be all of standards. I think standards are very dependent on the nature of the applications, the organizational structure, the development methodology being used, etc. I don't think there is a standard that is right for everyone, so in this case this is something that works for me and could maybe be useful to others as a data point when crafting there own standards.
+
+As an aside, my wife knows I have a love of laptop bags because I always feel like each bag is a little better then one before in terms of structure, layout, pockets, etc. My standards here are pretty much the same, I reserve the right to change it if I find something better. I would also love to get input from others in terms of what works for them, so feel free to comment below.
+
 ## Principles
+
+When formulating GitOps standards, it is very important to establish a set of principles as a baseline that all other standards must follow and adhere too. The set of principles being followed here include:
 
 * __Do__ separate code (i.e. java, python, etc) from manifests (i.e. yaml) into different repos.
 * __Do__ minimize yaml duplication, no copy paste
@@ -11,12 +19,6 @@
 * __Do__ prefer a multi-folder and/OR multi-repo structure over multi-branch, i.e do not use branching to hold different sets of files (i.e. dev in one branch, test in another). This does not preclude the use of branches for features, this is stating that there should not be permanent branches for clusters or environments.
 * __Do__ minimize specific gitops tool (ArgoCD, ACM, etc) dependencies as much as possible
 * __Do__ put dependent applications manifests in the same manifests repo when managed by the same team. A microservice or 3 tier app that is composed of multiple deployments and managed by the same team would likely be in the same repo. __Do not__ put independent applications or applications managed by different teams in the same repo.
-
-## Assumptions
-
-* As per the tools standards, this folder structure is dependent on kustomize. No thought is given to Helm or other alternatives at this time.
-* A lesser used feature of kustomize is its ability to leverage remote repos, i.e. specify a base or overlay from a separate repo. This can be used to isolate environmental configurations in separate repos without duplicating yaml
-* This document is priomarily focused on the Application use case, another use case is using GitOps for cluster configuration. Some of what is described here may be relevant to both however it may be desirable to use an alternative folder structure.
 
 ## More On Why Not Environment Branches?
 
@@ -32,6 +34,13 @@ This often seems like an ideal way to do things, promoting between environments 
 So in short I personally much prefer a single branch style with multiple folders to represent environments and clusters as we will see below.
 
 Obviously this does not preclude using branches for updates, PRs, etc but these branches should be short lived, temporary artifacts to support development and not permanent fixtures.
+
+## Assumptions
+
+* As per the [tools standards](https://github.com/gnunn-gitops/standards/blob/master/tools.md), this folder structure is dependent on [kustomize](https://kustomize.io). No thought is given to Helm or other alternatives at this time.
+* A lesser used feature of kustomize is its ability to leverage remote repos, i.e. specify a base or overlay from a separate repo. This can be used to isolate environmental configurations in separate repos without duplicating yaml. You can read more about this feature [here](https://github.com/kubernetes-sigs/kustomize/blob/master/examples/remoteBuild.md).
+* While the initial structure was focused on Application use cases, I've found it to work well for cluster configuration use cases as well.
+* My focus is on [OpenShift](https://www.openshift.com/), I have not vetted anything in this document for other kubernetes distributions however I expect this would work similarly across any distribution.
 
 ## Folder Layout
 
@@ -298,19 +307,19 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
 
 </table>
 
-## Promoting Changes
+## Promoting Manifest Changes
 
-A key question in any gitops scenario is how to manage promotion of changes between different environments and clusters. This process is heavily dependent on the structure and processes of the organization, however it is possible to define some basic characteristics that we are looking for as follows:
+A key question in any gitops scenario is how to manage promotion of changes in manifests between different environments and clusters. This process is heavily dependent on the structure and processes of the organization, however it is possible to define some basic characteristics that we are looking for as follows:
 
 * Since every overlay depends on the base manifests, every change in the manifests needs to flow through the environments in hierarchical order, i.e. (dev > test > prod). We do not want a change to a base flowing to all environments simultaneously.
-* To prevent changes in manifests flowing directly to environments, the state of environments and clusters needs to be pinned in git (i.e. revision or tag).
-* Changes to environments/clusters can flow directly to the target environment. i.e. a direct change to the prod overlay can flow directly to prod without a promotion process. However given the structure of our repo these direct changes should be rare (i.e. prod specific secrets, etc)
+* To prevent changes in manifests flowing directly to environments, the state of environments and clusters needs to be pinned in git (i.e. commit revision or tag).
+* Changes to environments/clusters can flow directly to the target environment. i.e. a direct change to the prod overlay can flow directly to prod without a promotion process. However given the structure of our repo these direct changes should be rare (i.e. prod specific secrets, etc) and limited to emergencies.
 
-As stated above, we need to tie specific environments to specific revisions so that changes in the repo can be promoted in a controlled manner following a proper SDLC process. Both the various GitOps tools (ArgoCD, Flux, ACM, etc) and Kustomize support referencing specific commits in a repo, as a result there are various options we have for managing environment promotions.
+So as stated above, we need to tie specific environments to specific revisions so that changes in the repo can be promoted in a controlled manner following a proper SDLC process. Both the various GitOps tools (ArgoCD, Flux, ACM, etc) and Kustomize support referencing specific commits in a repo, as a result there are various options we have for managing environment promotions.
 
 Note that using branches is implicit in these options but not discussed directly. As per the Why Not Branches section above, the intent is for short-lived branches to be created for revisions and merged back to trunk. So managing revisions is really about tracking the appropriate revision in trunk.
 
-#### Option 1 - Manage revisions in GitOps Tool
+#### Option 1 - Manage revisions in the GitOps Tool
 
 In this option we deploy each environment as an independent entity in the GitOps tool and tie each environment to a specific revision. So in ArgoCD, we would tie the application object for the Dev environment to one revision, the Test environment to another revision, etc.
 
@@ -358,4 +367,17 @@ In this option we combine Options #1 and #2 for maximum control.
 
 #### Recommendation
 
-At this point I don't have one as I don't have enough experience yet to determine how I personally want to manage things. Having said that, you absolutely do need to tie your environments to git revisions and not have them follow trunk directly. So pick a style and go with it and see how it works out :)
+I don't have strong feelings at this point but my personal leaning is towards Hybrid.
+
+## Examples
+
+Here are a couple of repositories where you can see this standard in action:
+
+* [Product Catalog](https://github.com/gnunn-gitops/product-catalog). This is a three tier application (front-end, back-end and database) deployed using GitOps with ArgoCD (or ACM) and kustomize. It deploys three separate environments (dev, test and prod) along wth Tekton pipelines to build the front-end and back-end applications. It also deploys a grafana instance for application monitoring that ties into OpenShift's [user defined monitoring](https://docs.openshift.com/container-platform/4.6/monitoring/enabling-monitoring-for-user-defined-projects.html).
+* [Cluster Configuration](https://github.com/gnunn-gitops/cluster-config). This repo shows how I configure my OpenShift clusters using GitOps with ArgoCD. It configures a number of things including certificates, authentication, default operators, console customizations, storage and more.
+
+I also highly recommend checking out the [Red Hat Canada GitOps](https://github.com/redhat-canada-gitops) organization as well. These repos include a default installation of the excellent [ArgoCD](https://github.com/redhat-canada-gitops/argocd) operator as well as a [catalog](https://github.com/redhat-canada-gitops/catalog) of tools and applications deployed with kustomize.
+
+## Acknowledgements
+
+I'd like to thank Andrew Pitt whose led the way on lot of the GitOps stuff in our group, he built the ArgoCD installation above as well as a substantial portion of the catalog items.
