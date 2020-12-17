@@ -24,7 +24,7 @@ __Helm__. Helm is a package manager for Kubernetes and OpenShift 4 now supports 
 
 Personally I think Helm's sweet spot is as a package manager, i.e. similar to RPMs, and is overkill for most enterprise teams. Additionally charts can quickly become very complex and difficult to maintain for anyone other then the original author. Lastly it uses templates which again is challenging for iterative development but easier then other templating solutions with the capabilities that Helm provides.
 
-Finally from an application/package manager perspective I feel like I'm getting that functionality out of my gitops tool and Helm is providing a lot of value add here.
+Finally from an application/package manager perspective I feel like I'm getting that functionality out of my gitops tool and Helm is not providing a lot of value add here.
 
 All GitOps tools support working with Helm charts.
 
