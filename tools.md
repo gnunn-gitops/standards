@@ -45,3 +45,12 @@ __Recommendation__. My personal recommendation is kustomize, it has worked extre
 There are a variety of GitOps tools available and I will not provide information or make a recommendation here simply because I do not have sufficient experience with them. I personally use ArgoCD and Red Hat's Advanced Cluster Management (ACM) and am satisfied with both. Disclaimer I am a Red Hat employee.
 
 I do not have experience with Flux but it is a popular tool as well.
+
+## Secrets
+
+One of the challenges of GitOps is managing secrets since you typically do not want to have your unprotected secrets in a git repo. There are typically two different broad approaches for dealing with this:
+
+1. Externalize the secrets from git using a product like Hashicorp's Vault
+2. Encrypt your secrets in git (Sealed Secrets, Sops, etc)
+
+I have opted for using #2 and Sealed Secrets as it is a simple approach that meets my basic needs. If you have Vault or some other tool available in your enterprise to externalize secrets I would recommend using that.
