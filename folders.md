@@ -56,8 +56,9 @@ For Application repositories. in general you should align your repositories alon
 
 For cluster configuration repositories, I would lean towards having different repositories for each cluster with a common repo for shared components and configuration. Having said that, if you look at my cluster-config repo referenced below I am only using a single repo however my use case is somewhat different then most organizations.
 
-
 ## Folder Layout
+
+Below is the folder standard I use in my own repos, it is relatively opinionated and I am definitely not saying it is the one true way. However given the paucity of documentation in this area I felt it would be useful to put it out there for others as a reference.
 
 <table>
     <colgroup>
