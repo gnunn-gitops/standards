@@ -37,10 +37,28 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
 
 ## Assumptions
 
-* As per the [tools standards](https://github.com/gnunn-gitops/standards/blob/master/tools.md), this folder structure is dependent on [kustomize](https://kustomize.io). No thought is given to Helm or other alternatives at this time.
+* As per the [tools standards](https://github.com/gnunn-gitops/standards/blob/master/tools.md), this folder structure is heavily dependent on [kustomize](https://kustomize.io). No thought is given to Helm or other alternatives at this time.
 * A lesser used feature of kustomize is its ability to leverage remote repos, i.e. specify a base or overlay from a separate repo. This can be used to isolate environmental configurations in separate repos without duplicating yaml. You can read more about this feature [here](https://github.com/kubernetes-sigs/kustomize/blob/master/examples/remoteBuild.md).
 * While the initial structure was focused on Application use cases, I've found it to work well for cluster configuration use cases as well.
 * My focus is on [OpenShift](https://www.openshift.com/), I have not vetted anything in this document for other kubernetes distributions however I expect this would work similarly across any distribution.
+
+## Repository Organization
+
+I am a fan of having or or more catalog repositories to hold common elements that will be re-used across teams and other respositories. You can see this in action with the [Red Hat Canada Catalog](https://github.com/redhat-canada-gitops/catalog) repository where colleagues and I maintain a common set of components that we re-use across our individual repositories.
+
+This is made possible by a great but under-utilized feature of kustomize that enables it to reference remote repositories as a base or resource and then patch it as needed to meet your specific requirements. The key to making this work successfuly is to ensure that when you reference the common repository you do so via a tag or commit ID. Not doing this means any time there is an update to the common repo you will automatically get that change. Using a tag or commit ID means you control when newer versions are brought in for application.
+
+<b>Note:</b> I realize in my repos I'm very bad at following the practice of using a tag/commit ID when referencing remote repos :)
+
+While in Red Hat Canada we have one repository that covers everything, in many organizations it will be typical to have a few different common repositories maintained by different teams. For example, the operations team may have a common rtepository for cluster configuration whereas the application architects may maintain a common repository for application components (Nexus, Sonarqube, frameworks, etc).
+
+For Application repositories. in general you should align your repositories along application and team boundaries. For example, if I have an application that consists of a set of microservices where team A manages one microservice and team B manages a different one then this is best done as two different repositories in my opinion. If a team is maintaining multiple applications then again this is likely different repositories, one for each application.
+
+For cluster configuration repositories, I would lean towards having different repositories for each cluster. While for me I'm using a single repo I'm also maintaining a very small set of clusters as well. In most organizations where
+
+
+
+
 
 ## Folder Layout
 
@@ -57,13 +75,22 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
     </tr>
     <tr>
         <td align="right" valign="top">0</td>
-        <td valign="top">├manifests</td>
+        <td valign="top">├bootstrap</td>
         <td valign="top">
             <ul>
-                <li>Provides base yaml for all required apps, pipelines, and gitops tools.</li>
-                <li>Only overlays that are needed to support environment independent variants are permitted. For example kustomizing an HA deployment versus single</li>
-                <li><em>Generally</em> no buildconfigs (i.e. for s2i) in app folders, those should be in tekton or jenkins pipelines folder</li>
-                <li>Controversial Any values that must be configured downstream (i.e. namespace references) should use kustomize features to avoid explicitly specifying them. In cases where it is not possible capitalized values should be used to prevent them slipping through accidentally</li>
+                <li>The minimal yaml required to bootstrap the entity into a cluster. This entity could be an application, cluster configuration or something else.</li>
+                <li><em>Generally</em> this will be an Argo CD App of Apps, an ApplicationSet or something of that nature that will in turn load the rest of the components.</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td align="right" valign="top">0</td>
+        <td valign="top">├components</td>
+        <td valign="top">
+            <ul>
+                <li>Provides yaml for all required apps, pipelines, and gitops tools.</li>
+                <li><em>Generally</em> I prefer to have no buildconfigs (i.e. for s2i) in app folders, those should be in tekton or jenkins pipelines folder</li>
+                <li>Avoid creating namespaces in components, this should be done in <em>environments</em> or <em>clusters</em> folders.
             </ul>
         </td>
     </tr>
@@ -94,7 +121,7 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
         <td valign="top">├──────overlays</td>
         <td valign="top">
           <ul>
-          <li>In general overlays in manifests should be the exception not the norm. Variants of deployments are acceptable as overlays but more often then not overlays should be confined to environments.</li>
+          <li>Overlays related to variations (i.e. HA versus non-HA) as well as environment oriented overlays. Cluster specific overlays should not be here, instead they will be in the `/clusters` folder.</li>
         </td>
     </tr>
     <tr>
@@ -126,7 +153,7 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
         <td valign="top">├──────{pipeline1}/base</td>
         <td valign="top">
             <ul>
-                <li>Includes pipeline plus all artifacts needed for pipeline not called out in separate folders. Things like PVCs for workspaces, buildconfigs used by the pipeline, etc go here</li>
+                <li>Includes pipeline plus all artifacts needed for pipeline not called out in separate folders. Items like PVCs for workspaces, buildconfigs used by the pipeline, etc go here</li>
                 <li>Pipelines may but do not need to map 1:1 to apps</li>
             </ul>
         </td>
@@ -186,25 +213,13 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
         </td>
     </tr>
     <tr>
-        <td align="right" valign="top">2</td>
-        <td valign="top">├────tools</td>
+        <td align="right" valign="top">1</td>
+        <td valign="top">├──argocd</td>
         <td valign="top">
             <ul>
-                <li>Define gitops artifacts here (i.e. ArgoCD projects and applications, ACM subscriptions, channels, etc)</li>
-                <li>Having separate named folders for tools is optional, if your org is committed to one tool feel free to drop yaml directly into tools</li>
+                <li>An optional folder for argocd applicationsthat may be required over and above what is in the bootstrap folder. Most commonly needed when using the App of App pattern with individually defined applications rather then an applicationset.</li>
+                <li>In general, put things here if you find you are duplicating argo cd manifests in the bootstrap folder</li>
             </ul>
-        </td>
-    </tr>
-    <tr>
-        <td align="right" valign="top">3</td>
-        <td valign="top">├──────argocd/base</td>
-        <td valign="top">
-        </td>
-    </tr>
-    <tr>
-        <td align="right" valign="top">3</td>
-        <td valign="top">├──────acm/base</td>
-        <td valign="top">
         </td>
     </tr>
     <tr>
@@ -212,10 +227,10 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
         <td valign="top">├environments</td>
         <td valign="top">
             <ul>
-                <li><b>Must</b> Inherit from <i>manifests</i> only, absolutely not permitted to inherit from <i>clusters</i></li>
-                <li>Provides environment specific kustomization that is separate and distinct from cluster configuration</li>
-                <li>Can aggregate multiple bases from <i>manifests</i> to create complete application. For example, aggregate several microservices or an application and it's database.</li>
-                <li>Namespaces should be created here</li>
+                <li>Optional folder that provides additional environment specific kustomization that is separate and distinct from cluster configuration. While commponents can have environment specific overlays sometimes you need to aggregate different components for a complete application. I like doing this here versus coming up with something artificial in components.</li>
+                <li>I also find this useful to support demos which is not a typical use case. As I tend to deploy the same environments to multiple clusters to support these demos having an environments folder makes sense.</li>
+                <li><b>Must</b> Inherit from <i>components</i> only, absolutely not permitted to inherit from <i>clusters</i></li>
+                <li>When aggregating multiple components namespaces should be created here not in component overlays.</li>
             </ul>
         </td>
     </tr>
@@ -258,9 +273,7 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
         <td valign="top">
             <ul>
                 <li>Cluster specific overlays go here</li>
-                <li>Clusters can inherit from <i>environments</i> and <i>manifests</i></li>
-                <li>No namespace creation or specification goes here</li>
-                <li>Cluster specific rolebindings go here, since we do not allow namespace specification in kustomize here this avoids the whole issue with kustomize replacing namespaces in roles issue</li>
+                <li>Clusters can inherit from <i>environments</i> and <i>components</i></li>
             </ul>
         </td>
     </tr>
@@ -304,6 +317,17 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
         <td valign="top">├──────prod</td>
         <td valign="top"></td>
     </tr>
+    <tr>
+        <td align="right" valign="top">0</td>
+        <td valign="top">├tenants/{team}</td>
+        <td valign="top">
+            <ul>
+                <li>Only applicable to cluster configuration situations, tenants represent the different teams/applications/etc in a multi-tenant cluster.</li>
+                <li>This is where you define cluster level resources (namespaces, quotas, limitranges, operators to install, etc) that are needed by the teams to do their work but typically require cluster-admin rights to provision</li>
+            </ul>
+        </td>
+    </tr>
+
 
 </table>
 
