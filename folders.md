@@ -48,7 +48,7 @@ I am a fan of having or or more catalog repositories to hold common elements tha
 
 This is made possible by a great but under-utilized feature of kustomize that enables it to reference remote repositories as a base or resource and then patch it as needed to meet your specific requirements. The key to making this work successfuly is to ensure that when you reference the common repository you do so via a tag or commit ID. Not doing this means any time there is an update to the common repo you will automatically get that change deployed by your gitops tool. Using a tag or commit ID means you control when newer versions are brought in for application by updating it in your git repo.
 
-<b>Note:</b> As an FYI realize in my repos I'm very bad at following the practice of using a tag/commit ID when referencing remote repos, don't be Gerald and do the right thing :)
+<b>Note:</b> As an FYI realize in my repos I'm very bad at following this practice of using a tag/commit ID when referencing remote repos, don't be Gerald and do the right thing :)
 
 While in Red Hat Canada we have one repository that covers everything, in many organizations it will be typical to have a few different common repositories maintained by different teams. For example, the operations team may have a common rtepository for cluster configuration whereas the application architects may maintain a common repository for application components (Nexus, Sonarqube, frameworks, etc).
 
