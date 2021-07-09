@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Approximately 8 months ago I began my GitOps journey with kustomize followed shortly thereafter with adding ArgoCD after being introduced to it by my colleague Andrew Pitt. When I started working with kustomize one thing I looked for was a set of standards around practices and folder layout in order to apply some consistency to the work I was doing. Unfortunately I didn't find much beyond overly simplistic suggestions that didn't really work, at least for me, once I scaled them out to more real world situations.
+Many moons ago I began my GitOps journey with kustomize followed shortly thereafter with adding ArgoCD after being introduced to it by my colleague Andrew Pitt. When I started working with kustomize one thing I looked for was a set of standards around practices and folder layout in order to apply some consistency to the work I was doing. Unfortunately I didn't find much beyond overly simplistic suggestions that didn't really work, at least for me, once I scaled them out to more real world situations.
 
 As a result I ended up crafting my own set of standards which I'm still using to this day and I thought I'd share it more broadly. Now I am absolutely not saying this is the end all, be all of standards. I think standards are very dependent on the nature of the applications, the organizational structure, the development methodology being used, etc. I don't think there is a standard that is right for everyone, so in this case this is something that works for me and could maybe be useful to others as a data point when crafting there own standards.
 
@@ -46,18 +46,15 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
 
 I am a fan of having or or more catalog repositories to hold common elements that will be re-used across teams and other respositories. You can see this in action with the [Red Hat Canada Catalog](https://github.com/redhat-canada-gitops/catalog) repository where colleagues and I maintain a common set of components that we re-use across our individual repositories.
 
-This is made possible by a great but under-utilized feature of kustomize that enables it to reference remote repositories as a base or resource and then patch it as needed to meet your specific requirements. The key to making this work successfuly is to ensure that when you reference the common repository you do so via a tag or commit ID. Not doing this means any time there is an update to the common repo you will automatically get that change. Using a tag or commit ID means you control when newer versions are brought in for application.
+This is made possible by a great but under-utilized feature of kustomize that enables it to reference remote repositories as a base or resource and then patch it as needed to meet your specific requirements. The key to making this work successfuly is to ensure that when you reference the common repository you do so via a tag or commit ID. Not doing this means any time there is an update to the common repo you will automatically get that change deployed by your gitops tool. Using a tag or commit ID means you control when newer versions are brought in for application by updating it in your git repo.
 
-<b>Note:</b> I realize in my repos I'm very bad at following the practice of using a tag/commit ID when referencing remote repos :)
+<b>Note:</b> As an FYI realize in my repos I'm very bad at following the practice of using a tag/commit ID when referencing remote repos, don't be Gerald and do the right thing :)
 
 While in Red Hat Canada we have one repository that covers everything, in many organizations it will be typical to have a few different common repositories maintained by different teams. For example, the operations team may have a common rtepository for cluster configuration whereas the application architects may maintain a common repository for application components (Nexus, Sonarqube, frameworks, etc).
 
 For Application repositories. in general you should align your repositories along application and team boundaries. For example, if I have an application that consists of a set of microservices where team A manages one microservice and team B manages a different one then this is best done as two different repositories in my opinion. If a team is maintaining multiple applications then again this is likely different repositories, one for each application.
 
-For cluster configuration repositories, I would lean towards having different repositories for each cluster. While for me I'm using a single repo I'm also maintaining a very small set of clusters as well. In most organizations where
-
-
-
+For cluster configuration repositories, I would lean towards having different repositories for each cluster with a common repo for shared components and configuration. Having said that, if you look at my cluster-config repo referenced below I am only using a single repo however my use case is somewhat different then most organizations.
 
 
 ## Folder Layout
