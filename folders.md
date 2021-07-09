@@ -44,13 +44,13 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
 
 ## Repository Organization
 
-I am a fan of having or or more catalog repositories to hold common elements that will be re-used across teams and other respositories. You can see this in action with the [Red Hat Canada Catalog](https://github.com/redhat-canada-gitops/catalog) repository where colleagues and I maintain a common set of components that we re-use across our individual repositories.
+I am a fan of having or or more catalog repositories to hold common elements that will be re-used across teams and other repositories. You can see this in action with the [Red Hat Canada Catalog](https://github.com/redhat-canada-gitops/catalog) repository where colleagues and I maintain a common set of components that we re-use across our individual repositories.
 
-This is made possible by a great but under-utilized feature of kustomize that enables it to reference remote repositories as a base or resource and then patch it as needed to meet your specific requirements. The key to making this work successfuly is to ensure that when you reference the common repository you do so via a tag or commit ID. Not doing this means any time there is an update to the common repo you will automatically get that change deployed by your gitops tool. Using a tag or commit ID means you control when newer versions are brought in for application by updating it in your git repo.
+This is made possible by a great but under-utilized feature of kustomize that enables it to reference remote repositories as a base or resource and then patch it as needed to meet your specific requirements. The key to making this work successfully is to ensure that when you reference the common repository you do so via a tag or commit ID. Not doing this means any time there is an update to the common repo you will automatically get that change deployed by your gitops tool. Using a tag or commit ID means you control when newer versions are brought in for application by updating it in your git repo.
 
 <b>Note:</b> As an FYI realize in my repos I'm very bad at following this practice of using a tag/commit ID when referencing remote repos, don't be Gerald and do the right thing :)
 
-While in Red Hat Canada we have one repository that covers everything, in many organizations it will be typical to have a few different common repositories maintained by different teams. For example, the operations team may have a common rtepository for cluster configuration whereas the application architects may maintain a common repository for application components (Nexus, Sonarqube, frameworks, etc).
+While in Red Hat Canada we have one repository that covers everything, in many organizations it will be typical to have a few different common repositories maintained by different teams. For example, the operations team may have a common repository for cluster configuration whereas the application architects may maintain a common repository for application components (Nexus, Sonarqube, frameworks, etc).
 
 For Application repositories. in general you should align your repositories along application and team boundaries. For example, if I have an application that consists of a set of microservices where team A manages one microservice and team B manages a different one then this is best done as two different repositories in my opinion. If a team is maintaining multiple applications then again this is likely different repositories, one for each application.
 
@@ -225,7 +225,7 @@ Below is the folder standard I use in my own repos, it is relatively opinionated
         <td valign="top">├environments</td>
         <td valign="top">
             <ul>
-                <li>Optional folder that provides additional environment specific kustomization that is separate and distinct from cluster configuration. While commponents can have environment specific overlays sometimes you need to aggregate different components for a complete application. I like doing this here versus coming up with something artificial in components.</li>
+                <li>Optional folder that provides additional environment specific kustomization that is separate and distinct from cluster configuration. While components can have environment specific overlays sometimes you need to aggregate different components for a complete application. I like doing this here versus coming up with something artificial in components.</li>
                 <li>I also find this useful to support demos which is not a typical use case. As I tend to deploy the same environments to multiple clusters to support these demos having an environments folder makes sense.</li>
                 <li><b>Must</b> Inherit from <i>components</i> only, absolutely not permitted to inherit from <i>clusters</i></li>
                 <li>When aggregating multiple components namespaces should be created here not in component overlays.</li>
@@ -237,7 +237,7 @@ Below is the folder standard I use in my own repos, it is relatively opinionated
         <td valign="top">├──overlays</td>
         <td valign="top">
             <ul>
-                <li>Note that names of overlays are arbritrary, use what works for you.</li>
+                <li>Note that names of overlays are arbitrary, use what works for you.</li>
         </td>
     </tr>
     <tr>
