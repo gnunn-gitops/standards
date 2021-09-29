@@ -196,8 +196,8 @@ Below is the folder standard I use in my own repos, it is relatively opinionated
         </td>
     </tr>
     <tr>
-        <td align="right" valign="top">2</td>
-        <td valign="top">├────jenkins</td>
+        <td align="right" valign="top">1</td>
+        <td valign="top">├──jenkins</td>
         <td valign="top">
             <ul>
                 <li>If you use Jenkins, I haven't spent much time on Jenkins layout since I'm mostly using tekton these days</li>
@@ -205,8 +205,8 @@ Below is the folder standard I use in my own repos, it is relatively opinionated
         </td>
     </tr>
     <tr>
-        <td align="right" valign="top">3</td>
-        <td valign="top">├──────pipelines</td>
+        <td align="right" valign="top">2</td>
+        <td valign="top">├────pipelines</td>
         <td valign="top">
         </td>
     </tr>
