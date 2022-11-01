@@ -44,7 +44,7 @@ Obviously this does not preclude using branches for updates, PRs, etc but these 
 
 ## Repository Organization
 
-I am a fan of having or or more catalog repositories to hold common elements that will be re-used across teams and other repositories. You can see this in action with the [Red Hat Canada Catalog](https://github.com/redhat-canada-gitops/catalog) repository where colleagues and I maintain a common set of components that we re-use across our individual repositories.
+I am a fan of having one or or more catalog repositories to hold common elements that will be re-used across teams and other repositories. You can see this in action with the [Red Hat Canada Catalog](https://github.com/redhat-canada-gitops/catalog) repository where colleagues and I maintain a common set of components that we re-use across our individual repositories.
 
 This is made possible by a great but under-utilized feature of kustomize that enables it to reference remote repositories as a base or resource and then patch it as needed to meet your specific requirements. The key to making this work successfully is to ensure that when you reference the common repository you do so via a tag or commit ID. Not doing this means any time there is an update to the common repo you will automatically get that change deployed by your gitops tool. Using a tag or commit ID means you control when newer versions are brought in for application by updating it in your git repo.
 
